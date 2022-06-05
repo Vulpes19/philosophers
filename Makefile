@@ -2,7 +2,7 @@ NAME = philo
 MAIN = main.c
 PRINTF = ft_printf
 LIBPRINTF = ft_printf/libftprintf.a
-SRC = parsing.c atoi.c threads.c
+SRC = parsing.c atoi.c threads.c convert.c
 OBJS = $(SRC:.c=.o)
 FLAGS = -Wall -Wextra -Werror -pthread
 HEADER = include/philosophers.h ft_printf/ft_printf.h
@@ -15,6 +15,9 @@ all: $(NAME)
 
 $(NAME): $(LIBPRINTF) $(OBJS) $(HEADER)
 	cc $(FLAGS) $(LIBPRINTF) $(MAIN) $(OBJS) -o $(NAME)
+
+sanitize: FLAGS += -fsanitize=address -g
+sanitize: re all
 
 $(LIBPRINTF):
 	$(MAKE) -C $(PRINTF)

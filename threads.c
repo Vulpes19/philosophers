@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 18:25:35 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/05/28 18:36:06 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/06/05 16:42:03 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,48 +15,60 @@
 void	*func(void *ptr)
 {
 	t_ph_var	*var;
-	t_philo		*philo;
+	int			time;
 
 	var = (t_ph_var *)ptr;
-	philo = NULL;
-	// while(1);
-	// ft_printf("%d\n", nbr);
-	pthread_mutex_lock(&var->fork);
-	ft_printf("philosopher %d has taken a fork\n", var->index + 1);
-	pthread_mutex_lock(&var->fork);
-	// ft_printf("philosopher %d has started two eating\n",
-	// 	var->index % philo->param[PHILO_FORKS]);
-	// pthread_mutex_unlock(&philo->fork[var->index + 1]);
-	// pthread_mutex_unlock(&philo->fork[var->index % philo->param[PHILO_FORKS]]);
-	// ft_printf("philosopher %d is sleeping\n", var->index + 1);
-	// ft_printf("philosopher %d is thinking\n", var->index + 1);
+	while (1)
+	{
+		if (var->index % 2 != 0)
+			usleep(500);
+		time = var->philo->param[TIME_2_EAT];
+		gettimeofday(&(var->philo->current_time), NULL);
+		pthread_mutex_lock(&(var->philo->fork[var->index]));
+		printf("%ld philosopher %d has taken a fork\n",
+			ft_convert_sec(var->philo->current_time.tv_sec - var->philo->start_time, var->philo->current_time.tv_usec), var->index + 1);
+		pthread_mutex_lock(&(var->philo->fork[(var->index + 1) % var->philo->param[PHILO_FORKS]]));
+		printf("%ld philosopher %d has taken a fork\n",
+			ft_convert_sec(var->philo->current_time.tv_sec - var->philo->start_time, var->philo->current_time.tv_usec), var->index + 1);
+		printf("%ld philosopher %d has started eating\n",
+			ft_convert_sec(var->philo->current_time.tv_sec - var->philo->start_time, var->philo->current_time.tv_usec), var->index + 1);
+		usleep(400 * 1000);
+		pthread_mutex_unlock(&(var->philo->fork[(var->index + 1) % var->philo->param[PHILO_FORKS]]));
+		pthread_mutex_unlock(&(var->philo->fork[var->index]));
+		printf("%ld philosopher %d is sleeping\n",
+			ft_convert_sec(var->philo->current_time.tv_sec - var->philo->start_time, var->philo->current_time.tv_usec), var->index + 1);
+		usleep(100 * 1000);
+		printf("%ld philosopher %d is thinking\n",
+			ft_convert_sec(var->philo->current_time.tv_sec - var->philo->start_time, var->philo->current_time.tv_usec), var->index + 1);
+	}
 	return (NULL);
 }
 
 void	ft_create_threads(t_philo *philo)
 {
-	int			i;
-	t_ph_var	*var;
+	int				i;
+	t_ph_var		*var;
 
+	i = 0;
 	philo->ph = (pthread_t *)
 		malloc(sizeof(pthread_t) * philo->param[PHILO_FORKS]);
 	var = (t_ph_var *)
 		malloc(sizeof(t_ph_var) * philo->param[PHILO_FORKS]);
-	philo->fork = (pthread_mutex_t *)
-		malloc(sizeof(pthread_mutex_t) * philo->param[PHILO_FORKS]);
+	philo->fork = malloc(sizeof(pthread_mutex_t) * philo->param[PHILO_FORKS]);
+	philo->print_lock = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init((philo->print_lock), NULL);
 	i = 0;
 	while (i < philo->param[PHILO_FORKS])
-		pthread_mutex_init(&philo->fork[i++], NULL);
+		pthread_mutex_init(&(philo->fork[i++]), NULL);
 	i = 0;
-	pthread_mutex_init(&philo->print_lock, NULL);
 	while (i < philo->param[PHILO_FORKS])
 	{
 		var[i].index = i;
-		var[i].fork = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-		pthread_mutex_init(&var[i].fork, NULL);
-		if (pthread_create(&philo->ph[i], NULL, &func, &var[i]) != 0)
+		var[i].philo = philo;
+		if (pthread_create(&philo->ph[i], NULL, &func, var + i) != 0)
 			ft_printf("ERROR\n");
 		i++;
+		// usleep(100);
 	}
 	i = 0;
 	while (i < philo->param[PHILO_FORKS])
@@ -64,9 +76,7 @@ void	ft_create_threads(t_philo *philo)
 		if (pthread_join(philo->ph[i++], NULL) != 0)
 			ft_printf("ERROR\n");
 	}
-	i = 0;
-	while (i < philo->param[PHILO_FORKS])
-		pthread_mutex_destroy(&var[i++].fork);
+	// i = 0;
 	// while (i < philo->param[PHILO_FORKS])
 	// 	pthread_mutex_destroy(&philo->fork[i++]);
 }

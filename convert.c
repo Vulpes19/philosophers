@@ -1,26 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   convert.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/21 11:16:57 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/06/04 16:49:54 by abaioumy         ###   ########.fr       */
+/*   Created: 2022/06/05 16:27:55 by abaioumy          #+#    #+#             */
+/*   Updated: 2022/06/05 16:45:00 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/philosophers.h"
 
-int	main(int ac, char **av)
+long	ft_convert_sec(long nbr, int nbr2)
 {
-	t_philo			philo;
-
-	gettimeofday(&(philo.current_time), NULL);
-	philo.start_time = philo.current_time.tv_sec;
-	if (ac != 5 && ac != 6)
-		return (0);
-	ft_parse_param(av, ac, &philo);
-	ft_create_threads(&philo);
-	return (0);
+	return ((nbr * 1000) + (nbr2 / 1000));
 }
