@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 18:01:48 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/06/05 16:44:15 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/06/08 21:23:23 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,10 @@
 # define TIME_2_EAT 2
 # define TIME_2_SLEEP 3
 # define NBR_FOR_PHILO_2_EAT 4
+# define FORK 5
+# define EAT 6
+# define SLEEP 7
+# define THINK 8
 
 # include <stdio.h>
 # include <unistd.h>
@@ -24,6 +28,13 @@
 # include <sys/time.h>
 # include <stdlib.h>
 # include "../ft_printf/ft_printf.h"
+
+typedef struct s_states
+{
+	long	time1;
+	int		time2;
+	int		time3;
+}	t_states;
 
 typedef struct s_time
 {
@@ -42,13 +53,18 @@ typedef struct s_philo
 
 typedef	struct s_ph_var
 {
+	long			l_time_eat;
+	int				ifnotdead;
 	int				index;
 	t_philo			*philo;
 }	t_ph_var;
 
-int		ft_atoi(const char *str);
-void	ft_parse_param(char **av, int ac, t_philo *philo);
-void	ft_create_threads(t_philo *philo);
-long	ft_convert_sec(long nbr, int nbr2);
+int				ft_atoi(const char *str);
+void			ft_parse_param(char **av, int ac, t_philo *philo);
+void			ft_create_threads(t_philo *philo);
+long			ft_convert_sec(long nbr, int nbr2);
+unsigned int	ft_current_time(void);
+void			ft_good_sleep(unsigned int time_s);
+void			ft_print_states(t_ph_var *var, int state);
 
 #endif
