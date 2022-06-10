@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 18:01:48 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/06/08 21:23:23 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/06/10 11:45:40 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,13 @@ typedef struct s_philo
 
 typedef	struct s_ph_var
 {
-	long			l_time_eat;
 	int				ifnotdead;
 	int				index;
 	t_philo			*philo;
+	long			starttime;
+	long			endtime;
+	int				test;
+	int				nbr_eat;
 }	t_ph_var;
 
 int				ft_atoi(const char *str);
