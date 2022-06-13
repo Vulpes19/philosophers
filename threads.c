@@ -6,13 +6,52 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 18:25:35 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/06/10 11:49:15 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/06/13 11:00:24 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/philosophers.h"
 
-void	*func(void *ptr)
+int	ft_if_philo_dead(t_ph_var *var)
+{
+	if (var->endtime - var
+		->starttime > var->philo->param[TIME_2_DIE] && var->test > 0)
+	{
+		pthread_mutex_lock(var->philo->print_lock);
+		printf("endtime: %ld\n starttime: %ld\n", var->endtime, var->starttime);
+		printf("philosopher %d died", var->index + 1);
+		return (0);
+	}
+	return (1);
+}
+
+void	ft_philo_b(t_ph_var *var)
+{
+	pthread_mutex_lock(&(var->philo
+			->fork[(var->index + 1) % var->philo->param[PHILO_FORKS]]));
+	pthread_mutex_lock((var->philo->print_lock));
+	ft_print_states(var, FORK);
+	pthread_mutex_unlock((var->philo->print_lock));
+	pthread_mutex_lock((var->philo->print_lock));
+	ft_print_states(var, EAT);
+	pthread_mutex_unlock((var->philo->print_lock));
+	ft_good_sleep(var->philo->param[TIME_2_EAT]);
+	pthread_mutex_unlock(&(var->philo
+			->fork[(var->index + 1) % var->philo->param[PHILO_FORKS]]));
+	var->nbr_eat--;
+	var->starttime = ft_convert_sec(var->philo->current_time.tv_sec
+			- var->philo->start_time, var->philo->current_time.tv_usec);
+	pthread_mutex_unlock(&(var->philo->fork[var->index]));
+	pthread_mutex_lock((var->philo->print_lock));
+	ft_print_states(var, SLEEP);
+	pthread_mutex_unlock((var->philo->print_lock));
+	ft_good_sleep(var->philo->param[TIME_2_SLEEP]);
+	pthread_mutex_lock((var->philo->print_lock));
+	ft_print_states(var, THINK);
+	pthread_mutex_unlock((var->philo->print_lock));
+}
+
+void	*ft_philo_a(void *ptr)
 {
 	t_ph_var	*var;
 
@@ -20,46 +59,19 @@ void	*func(void *ptr)
 	while (1)
 	{
 		if (var->index % 2 != 0)
-			usleep(500);
+			usleep(100);
 		gettimeofday(&(var->philo->current_time), NULL);
 		pthread_mutex_lock(&(var->philo->fork[var->index]));
 		pthread_mutex_lock((var->philo->print_lock));
 		ft_print_states(var, FORK);
 		pthread_mutex_unlock((var->philo->print_lock));
-		var->endtime = ft_convert_sec(var->philo->current_time.tv_sec - var->philo->start_time, var->philo->current_time.tv_usec);
-		if (var->endtime - var->starttime > var->philo->param[TIME_2_DIE] && var->test > 0)
-		{
-			pthread_mutex_lock(var->philo->print_lock);
-			printf("endtime: %ld\n starttime: %ld\n", var->endtime, var->starttime);
-			printf("philosopher %d died", var->index + 1);
-			exit(0);
-		}
-		pthread_mutex_lock(&(var->philo
-				->fork[(var->index + 1) % var->philo->param[PHILO_FORKS]]));
-		pthread_mutex_lock((var->philo->print_lock));
-		ft_print_states(var, FORK);
-		pthread_mutex_unlock((var->philo->print_lock));
-		pthread_mutex_lock((var->philo->print_lock));
-		ft_print_states(var, EAT);
-		pthread_mutex_unlock((var->philo->print_lock));
-		ft_good_sleep(var->philo->param[TIME_2_EAT]);
-		pthread_mutex_unlock(&(var->philo
-				->fork[(var->index + 1) % var->philo->param[PHILO_FORKS]]));
-		var->nbr_eat++;
-		if (var->philo->param[NBR_FOR_PHILO_2_EAT])
-		{
-			if (var->nbr_eat == var->philo->param[NBR_FOR_PHILO_2_EAT])
-				exit(0);
-		}
-		var->starttime = ft_convert_sec(var->philo->current_time.tv_sec - var->philo->start_time, var->philo->current_time.tv_usec);
-		pthread_mutex_unlock(&(var->philo->fork[var->index]));
-		pthread_mutex_lock((var->philo->print_lock));
-		ft_print_states(var, SLEEP);
-		pthread_mutex_unlock((var->philo->print_lock));
-		ft_good_sleep(var->philo->param[TIME_2_SLEEP]);
-		pthread_mutex_lock((var->philo->print_lock));
-		ft_print_states(var, THINK);
-		pthread_mutex_unlock((var->philo->print_lock));
+		if (var->nbr_eat == 0)
+			return (NULL);
+		var->endtime = ft_convert_sec(var->philo->current_time.tv_sec
+				- var->philo->start_time, var->philo->current_time.tv_usec);
+		if (!ft_if_philo_dead(var))
+			return (NULL);
+		ft_philo_b(var);
 		var->test++;
 	}
 	return (NULL);
@@ -87,8 +99,8 @@ void	ft_create_threads(t_philo *philo)
 		var[i].index = i;
 		var[i].philo = philo;
 		var[i].test = 0;
-		var[i].nbr_eat = 0;
-		if (pthread_create(&philo->ph[i], NULL, &func, var + i) != 0)
+		var[i].nbr_eat = philo->param[NBR_FOR_PHILO_2_EAT];
+		if (pthread_create(&philo->ph[i], NULL, &ft_philo_a, var + i) != 0)
 			ft_printf("ERROR\n");
 		i++;
 	}
