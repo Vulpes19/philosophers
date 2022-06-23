@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 18:01:48 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/06/10 11:45:40 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/06/23 12:42:59 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,15 +51,15 @@ typedef struct s_philo
 	struct timeval	current_time;
 }	t_philo;
 
-typedef	struct s_ph_var
+typedef	struct	s_ph_var
 {
+	int				*nbr_eat;
 	int				ifnotdead;
 	int				index;
 	t_philo			*philo;
 	long			starttime;
 	long			endtime;
 	int				test;
-	int				nbr_eat;
 }	t_ph_var;
 
 int				ft_atoi(const char *str);
@@ -69,5 +69,8 @@ long			ft_convert_sec(long nbr, int nbr2);
 unsigned int	ft_current_time(void);
 void			ft_good_sleep(unsigned int time_s);
 void			ft_print_states(t_ph_var *var, int state);
+void			ft_free_everything(t_ph_var *var);
+void			ft_check_eating(t_ph_var *var);
+void			ft_nbr_eat(t_ph_var *var);
 
 #endif

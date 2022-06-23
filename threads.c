@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/24 18:25:35 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/06/13 11:00:24 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/06/23 12:39:35 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,6 @@ int	ft_if_philo_dead(t_ph_var *var)
 	if (var->endtime - var
 		->starttime > var->philo->param[TIME_2_DIE] && var->test > 0)
 	{
-		pthread_mutex_lock(var->philo->print_lock);
-		printf("endtime: %ld\n starttime: %ld\n", var->endtime, var->starttime);
-		printf("philosopher %d died", var->index + 1);
 		return (0);
 	}
 	return (1);
@@ -36,9 +33,10 @@ void	ft_philo_b(t_ph_var *var)
 	ft_print_states(var, EAT);
 	pthread_mutex_unlock((var->philo->print_lock));
 	ft_good_sleep(var->philo->param[TIME_2_EAT]);
+	var->nbr_eat[var->index]--;
+	ft_check_eating(var);
 	pthread_mutex_unlock(&(var->philo
 			->fork[(var->index + 1) % var->philo->param[PHILO_FORKS]]));
-	var->nbr_eat--;
 	var->starttime = ft_convert_sec(var->philo->current_time.tv_sec
 			- var->philo->start_time, var->philo->current_time.tv_usec);
 	pthread_mutex_unlock(&(var->philo->fork[var->index]));
@@ -59,18 +57,21 @@ void	*ft_philo_a(void *ptr)
 	while (1)
 	{
 		if (var->index % 2 != 0)
-			usleep(100);
+			usleep(300);
 		gettimeofday(&(var->philo->current_time), NULL);
 		pthread_mutex_lock(&(var->philo->fork[var->index]));
 		pthread_mutex_lock((var->philo->print_lock));
 		ft_print_states(var, FORK);
 		pthread_mutex_unlock((var->philo->print_lock));
-		if (var->nbr_eat == 0)
-			return (NULL);
 		var->endtime = ft_convert_sec(var->philo->current_time.tv_sec
 				- var->philo->start_time, var->philo->current_time.tv_usec);
 		if (!ft_if_philo_dead(var))
-			return (NULL);
+		{
+			pthread_mutex_lock(var->philo->print_lock);
+			printf("philosopher %d died", var->index + 1);
+			ft_free_everything(var);
+			exit(0);
+		}
 		ft_philo_b(var);
 		var->test++;
 	}
@@ -94,12 +95,11 @@ void	ft_create_threads(t_philo *philo)
 	while (i < philo->param[PHILO_FORKS])
 		pthread_mutex_init(&(philo->fork[i++]), NULL);
 	i = 0;
+	ft_nbr_eat(var);
 	while (i < philo->param[PHILO_FORKS])
 	{
 		var[i].index = i;
 		var[i].philo = philo;
-		var[i].test = 0;
-		var[i].nbr_eat = philo->param[NBR_FOR_PHILO_2_EAT];
 		if (pthread_create(&philo->ph[i], NULL, &ft_philo_a, var + i) != 0)
 			ft_printf("ERROR\n");
 		i++;
