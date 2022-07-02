@@ -1,28 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   mutex_init.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/21 11:16:57 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/02 18:14:02 by abaioumy         ###   ########.fr       */
+/*   Created: 2022/07/01 20:31:17 by abaioumy          #+#    #+#             */
+/*   Updated: 2022/07/02 18:17:43 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/philosophers.h"
 
-int	main(int ac, char **av)
+void	ft_mutex_init(t_philo *philo)
 {
-	t_philo			philo;
-	t_ph_var		var;
+	int	i;
 
-	philo.start_time = ft_current_time();
-	if (!ft_handle_errors(ac, NBR_ARGS))
-		return (0);
-	if (!ft_parse_param(av, ac, &philo))
-		return (0);
-	ft_create_threads(&philo, &var);
-	// system("leaks philo");
-	return (0);
+	i = 0;
+	pthread_mutex_init((philo->print_lock), NULL);
+	pthread_mutex_init((philo->time_lock), NULL);
+	pthread_mutex_init((philo->eat_lock), NULL);
+	while (i < philo->param[PHILO_FORKS])
+		pthread_mutex_init(&(philo->fork[i++]), NULL);
 }

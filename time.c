@@ -6,13 +6,13 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 16:27:55 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/01 16:05:49 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/02 18:25:17 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/philosophers.h"
 
-void	ft_check_eating2(t_ph_var *var, t_philo *philo)
+void	ft_if_philo_died(t_ph_var *var, t_philo *philo)
 {
 	long	tm;
 	int		i;
@@ -21,23 +21,26 @@ void	ft_check_eating2(t_ph_var *var, t_philo *philo)
 	while (1)
 	{
 		i = 0;
-		tm = ft_current_time();
 		while (i < philo->param[PHILO_FORKS])
 		{
+			tm = ft_current_time();
+			pthread_mutex_lock((var[i].philo->time_lock));
+			// pthread_mutex_lock((var[i].philo->eat_lock));
 			if (ft_current_time() - var[i].last_meal > philo->param[TIME_2_DIE])
 			{
-				printf("died\n");
-				exit (0);
+				pthread_mutex_lock((var->philo->print_lock));
+				printf("%ld ms philosopher %d died\n",
+					ft_current_time() - var->philo->start_time, i + 1);
+				pthread_mutex_unlock((var->philo->print_lock));
+				// ft_free_everything(var);
+				return ;
 			}
+			// pthread_mutex_unlock((var[i].philo->eat_lock));
+			pthread_mutex_unlock((var[i].philo->time_lock));
 			i++;
 		}
-		sleep(1);
 	}
-}
-
-long	ft_convert_sec(long nbr, long nbr2)
-{
-	return ((nbr * 1000) + (nbr2 / 1000));
+	return ;
 }
 
 long	ft_current_time(void)
