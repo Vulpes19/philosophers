@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 18:01:48 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/02 18:15:04 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/03 14:55:00 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,17 +46,18 @@ typedef struct s_philo
 	pthread_mutex_t	*print_lock;
 	pthread_mutex_t	*time_lock;
 	pthread_mutex_t	*eat_lock;
+	pthread_mutex_t	*end_lock;
 	int				nbr_eat;
-	int				*eat_limit;
 }	t_philo;
 
 typedef struct s_ph_var
 {
-	int				test;
+	int				eat_limit;
 	int				ifnotdead;
 	int				index;
 	t_philo			*philo;
 	long			last_meal;
+	int				*should_end;
 }	t_ph_var;
 
 int				ft_atoi(const char *str);
@@ -68,7 +69,7 @@ void			ft_print_states(t_ph_var *var, int state);
 void			ft_free_everything(t_ph_var *var);
 void			ft_check_eating(t_ph_var *var);
 void			ft_if_philo_died(t_ph_var *var, t_philo *philo);
-void			ft_nbr_eat(t_philo *philo);
+// void			ft_nbr_eat(t_philo *philo);
 void			ft_mutex_init(t_philo *philo);
 int				ft_handle_errors(int ac, int nbr);
 
