@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 18:01:48 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/03 14:55:00 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/03 23:42:52 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,6 @@ typedef struct s_philo
 	long			start_time;
 	pthread_mutex_t	*fork;
 	int				*param;
-	pthread_t		*ph;
 	pthread_t		time;
 	pthread_mutex_t	*print_lock;
 	pthread_mutex_t	*time_lock;
@@ -52,6 +51,7 @@ typedef struct s_philo
 
 typedef struct s_ph_var
 {
+	pthread_t		*ph;
 	int				eat_limit;
 	int				ifnotdead;
 	int				index;
@@ -61,16 +61,20 @@ typedef struct s_ph_var
 }	t_ph_var;
 
 int				ft_atoi(const char *str);
+void			*ft_philo_a(void *ptr);
 int				ft_parse_param(char **av, int ac, t_philo *philo);
 void			ft_create_threads(t_philo *philo, t_ph_var *var);
 long			ft_current_time(void);
 void			ft_good_sleep(long time_s);
 void			ft_print_states(t_ph_var *var, int state);
 void			ft_free_everything(t_ph_var *var);
-void			ft_check_eating(t_ph_var *var);
+int				ft_check_eating(t_ph_var *var);
 void			ft_if_philo_died(t_ph_var *var, t_philo *philo);
-// void			ft_nbr_eat(t_philo *philo);
+void			ft_launch_threads(t_ph_var *var, t_philo *philo);
+int				ft_check_eat_limit(t_ph_var *var);
+int				take_cond(t_ph_var *var);
 void			ft_mutex_init(t_philo *philo);
 int				ft_handle_errors(int ac, int nbr);
+int				take_cond(t_ph_var *var);
 
 #endif

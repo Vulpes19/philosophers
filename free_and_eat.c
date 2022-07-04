@@ -6,40 +6,48 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 11:54:40 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/03 16:13:21 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/04 00:11:28 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/philosophers.h"
 
-// void	ft_nbr_eat(t_philo *philo)
-// {
-// 	// int	i;
+void	ft_launch_threads(t_ph_var *var, t_philo *philo)
+{
+	int	i;
+	int	*should_end;
 
-// 	// i = 0;
-// 	// if (philo->g_ac > 5)
-// 	// {
-// 	// 	(philo->eat_limit) = (int *)malloc(sizeof(int)
-// 	// 			* philo->param[PHILO_FORKS]);
-// 	// 	while (i < philo->param[PHILO_FORKS])
-// 	// 	{
-// 	// 		philo->eat_limit[i] = philo->nbr_eat;
-// 	// 		i++;
-// 	// 	}
-// 	// }
-// 	// else
-// 	// {
-// 	// 	philo->eat_limit = (int *)malloc(sizeof(int)
-// 	// 			* philo->param[PHILO_FORKS]);
-// 	// 	while (i < philo->param[PHILO_FORKS])
-// 	// 	{
-// 	// 		philo->eat_limit[i] = -1;
-// 	// 		i++;
-// 	// 	}
-// 	// }
-// }
+	i = 0;
+	should_end = (int *)malloc(4);
+	*should_end = 0;
+	while (i < philo->param[PHILO_FORKS])
+	{
+		var[i].eat_limit = philo->param[NBR_FOR_PHILO_2_EAT];
+		var[i].last_meal = ft_current_time();
+		var[i].index = i;
+		var[i].philo = philo;
+		var[i].should_end = should_end;
+		if (pthread_create(&var->ph[i], NULL, &ft_philo_a, &var[i]) != 0)
+			printf("ERROR\n");
+		i++;
+	}
+	i = 0;
+	while (i < philo->param[PHILO_FORKS])
+		pthread_detach(var->ph[i++]);
+	ft_if_philo_died(var, philo);
+}
 
-void	ft_check_eating(t_ph_var *var)
+int	take_cond(t_ph_var *var)
+{
+	int	cond;
+
+	pthread_mutex_lock((var->philo->end_lock));
+	cond = (*var->should_end == 0);
+	pthread_mutex_unlock((var->philo->end_lock));
+	return (cond);
+}
+
+int	ft_check_eating(t_ph_var *var)
 {
 	int		i;
 
@@ -47,26 +55,25 @@ void	ft_check_eating(t_ph_var *var)
 	while (i < var->philo->param[PHILO_FORKS])
 	{
 		pthread_mutex_lock(var->philo->eat_lock);
-		if (var[i].eat_limit)
+		if (var[i].eat_limit != 0)
 		{
 			pthread_mutex_unlock(var->philo->eat_lock);
-			return ;
+			return (0);
 		}
 		pthread_mutex_unlock(var->philo->eat_lock);
 		i++;
 	}
 	pthread_mutex_lock(var->philo->end_lock);
 	*var->should_end = 1;
-		// while (i < var->philo->param[PHILO_FORKS])
-		// 			pthread_join(var->philo->ph[i++], NULL);
-	// ft_free_everything(var);
+	pthread_mutex_unlock(var->philo->end_lock);
+	return (1);
 }
 
 void	ft_free_everything(t_ph_var *var)
 {
 	free(var->philo->param);
 	free(var->philo->fork);
-	free(var->philo->ph);
+	free(var->ph);
 	free(var->philo->print_lock);
 	free(var->philo->time_lock);
 	free(var->philo->end_lock);
