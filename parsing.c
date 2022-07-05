@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 18:08:02 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/02 16:25:05 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/04 23:02:41 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@ static int	ft_check_av(char *av)
 	int	i;
 
 	i = 0;
+	if (av[0] == '0')
+		return (0);
 	while (av[i])
 	{
-		if (!(av[i] >= 48 && av[i] <= 57))
+		if (!(av[i] >= 48 && av[i] <= 57) && av[i] != 43)
 			return (0);
 		i++;
 	}
@@ -41,7 +43,7 @@ int	ft_handle_errors(int ac, int nbr)
 	}
 	if (nbr == TYPE_ARGS)
 	{
-		printf("the arguments must be numbers!\n");
+		printf("the arguments must be positive numbers!\n");
 		return (0);
 	}
 	return (1);

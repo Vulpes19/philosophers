@@ -1,6 +1,6 @@
 NAME = philo
 MAIN = main.c
-SRC = parsing.c atoi.c threads.c time.c print.c free_and_eat.c mutex_init.c
+SRC = parsing.c atoi.c simulation.c time_death.c print_and_death.c threads_and_eat.c mutex_init.c
 OBJS = $(SRC:.c=.o)
 FLAGS = -Wall -Wextra -Werror -pthread
 HEADER = include/philosophers.h

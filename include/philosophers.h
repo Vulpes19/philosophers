@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 18:01:48 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/03 23:42:52 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/05 18:48:52 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,10 @@ void			ft_create_threads(t_philo *philo, t_ph_var *var);
 long			ft_current_time(void);
 void			ft_good_sleep(long time_s);
 void			ft_print_states(t_ph_var *var, int state);
-void			ft_free_everything(t_ph_var *var);
 int				ft_check_eating(t_ph_var *var);
+int				ft_death(t_ph_var *var, t_philo *philo, int i);
 void			ft_if_philo_died(t_ph_var *var, t_philo *philo);
 void			ft_launch_threads(t_ph_var *var, t_philo *philo);
-int				ft_check_eat_limit(t_ph_var *var);
 int				take_cond(t_ph_var *var);
 void			ft_mutex_init(t_philo *philo);
 int				ft_handle_errors(int ac, int nbr);
