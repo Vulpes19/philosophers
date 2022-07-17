@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/04 22:30:50 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/05 19:30:20 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/17 10:22:01 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	*ft_philo_a(void *ptr)
 	return (NULL);
 }
 
-void	ft_create_threads(t_philo *philo, t_ph_var *var)
+int	ft_create_threads(t_philo *philo, t_ph_var *var)
 {
 	int				i;
 
@@ -71,6 +71,14 @@ void	ft_create_threads(t_philo *philo, t_ph_var *var)
 	philo->eat_lock = malloc(sizeof(pthread_mutex_t));
 	philo->time_lock = malloc(sizeof(pthread_mutex_t));
 	philo->end_lock = malloc(sizeof(pthread_mutex_t));
+	if (!var->ph || !philo->fork || !philo->print_lock
+		|| !philo->eat_lock || !philo->time_lock || !philo->end_lock)
+	{
+		ft_handle_errors(1, MEM_FAIL);
+		return (0);
+	}
 	ft_mutex_init(philo);
-	ft_launch_threads(var, philo);
+	if (!ft_launch_threads(var, philo))
+		return (0);
+	return (1);
 }

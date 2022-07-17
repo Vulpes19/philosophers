@@ -6,26 +6,11 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/04 22:31:07 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/05 19:34:57 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/14 14:00:15 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/philosophers.h"
-
-static int	ft_if_philo_ate(t_ph_var *var)
-{
-	if (var->philo->g_ac > 5)
-	{
-		if (ft_check_eating(var))
-		{
-			pthread_mutex_lock((var->philo->print_lock));
-			printf("%ld ms all philosophers have eaten\n",
-				ft_current_time() - var->philo->start_time);
-			return (0);
-		}
-	}
-	return (1);
-}
 
 void	ft_if_philo_died(t_ph_var *var, t_philo *philo)
 {

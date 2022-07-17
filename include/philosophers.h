@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 18:01:48 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/05 18:48:52 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/14 14:01:20 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 # define THINK 8
 # define NBR_ARGS 9
 # define TYPE_ARGS 10
+# define MEM_FAIL 11
+# define TH_FAIL 12
 
 # include <stdio.h>
 # include <unistd.h>
@@ -63,14 +65,15 @@ typedef struct s_ph_var
 int				ft_atoi(const char *str);
 void			*ft_philo_a(void *ptr);
 int				ft_parse_param(char **av, int ac, t_philo *philo);
-void			ft_create_threads(t_philo *philo, t_ph_var *var);
+int				ft_create_threads(t_philo *philo, t_ph_var *var);
 long			ft_current_time(void);
 void			ft_good_sleep(long time_s);
 void			ft_print_states(t_ph_var *var, int state);
 int				ft_check_eating(t_ph_var *var);
 int				ft_death(t_ph_var *var, t_philo *philo, int i);
 void			ft_if_philo_died(t_ph_var *var, t_philo *philo);
-void			ft_launch_threads(t_ph_var *var, t_philo *philo);
+int				ft_launch_threads(t_ph_var *var, t_philo *philo);
+int				ft_if_philo_ate(t_ph_var *var);
 int				take_cond(t_ph_var *var);
 void			ft_mutex_init(t_philo *philo);
 int				ft_handle_errors(int ac, int nbr);

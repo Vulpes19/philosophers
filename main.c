@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/21 11:16:57 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/05 17:51:59 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/17 10:52:15 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	main(int ac, char **av)
 		return (0);
 	var = (t_ph_var *)
 		malloc(sizeof(t_ph_var) * philo->param[PHILO_FORKS]);
-	ft_create_threads(philo, var);
+	if (!ft_create_threads(philo, var))
+		return (0);
 	return (0);
 }

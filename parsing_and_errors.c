@@ -6,7 +6,7 @@
 /*   By: abaioumy <abaioumy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 18:08:02 by abaioumy          #+#    #+#             */
-/*   Updated: 2022/07/14 13:46:02 by abaioumy         ###   ########.fr       */
+/*   Updated: 2022/07/14 13:55:12 by abaioumy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,10 @@ int	ft_handle_errors(int ac, int nbr)
 		printf("the arguments must be positive numbers!\n");
 		return (0);
 	}
+	if (nbr == MEM_FAIL)
+		printf("Memory allocation failed\n");
+	if (nbr == TH_FAIL)
+		printf("Threads creation failed\n");
 	return (1);
 }
 
