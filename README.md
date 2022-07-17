@@ -1,6 +1,6 @@
 # philosophers
 This project teaches you how to work with threads in C.
-##Mandatory part:
+## Mandatory part:
 The program's arguments:
 - **number of philosophers**: The number of philosophers and also the number of forks.
 - **time to die**(ms): If this time passed and the philosopher stayed without eating, they die.
